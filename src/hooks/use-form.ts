@@ -12,7 +12,7 @@ function useForm<T extends { [key: string]: any }>(
         setTimeout(() => {
             for (let item in initialValues) {
                 const field = fields[item];
-                if (field instanceof Array) {
+                if (Array.isArray(field)) {
                     field.forEach(f => {
                         if (f.ref.value === initialValues[item]) {
                             (f.ref as HTMLInputElement).checked = true;
@@ -33,8 +33,8 @@ function useForm<T extends { [key: string]: any }>(
                 const target = e.target;
                 const name = target.name;
                 const value = target.value;
-                if (callBacksOnFieldChange.current[name]) {
-                    const callBack = callBacksOnFieldChange.current[name];
+                const callBack = callBacksOnFieldChange.current[name];
+                if (callBack) {
                     callBack(value);
                 }
             },
@@ -63,7 +63,7 @@ function useForm<T extends { [key: string]: any }>(
         const formValues: any = {};
         for (let name in fields) {
             const fieldItem = fields[name];
-            if (fieldItem instanceof Array) {
+            if (Array.isArray(fieldItem)) {
                 fieldItem.forEach(f => {
                     if ((f.ref as HTMLInputElement).checked) {
                         formValues[name] = f.ref.value;
@@ -85,7 +85,7 @@ function useForm<T extends { [key: string]: any }>(
 
     const clearError = (name: string) => {
         const field = fields[name];
-        if (field instanceof Array) {
+        if (Array.isArray(field)) {
             field.forEach(f => {
                 f.ref.classList.remove("error");
             })
@@ -102,9 +102,9 @@ function useForm<T extends { [key: string]: any }>(
     const settErros = (name: string, e: any) => {
         if (!e.errors) return;
         const field = fields[name];
-        if (field instanceof Array) {
+        if (Array.isArray(field)) {
             field.forEach(f => {
-                f.ref.classList.remove("error");
+                f.ref.classList.add("error");
             })
         } else {
             field.ref.classList.add("error");
