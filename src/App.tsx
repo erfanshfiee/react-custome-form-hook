@@ -5,8 +5,7 @@ import {object, string} from 'yup';
 const formSchema=object().shape(
     {
         name:string().email().required(),
-        radio:string().required(),
-        news:string().required()
+        language:string().required(),
     }
 )
 function App() {
@@ -18,20 +17,36 @@ function App() {
     onChange("name",(nameVal)=>{
         console.log(nameVal)
     })
+    const getError=(name:string)=>{
+        if(errors){
+            const allErrors=errors[name]
+            if(allErrors){
+                return(
+                    <div>
+                        {
+                            allErrors.map(e=><p key={e}>{e}</p>)
+                        }
+                    </div>
+                )
+            }
+        }
+    }
     return (
         <div className="App">
             <form onSubmit={e=>handleSubmit(onSubmit,e)}>
                 <input type="text" {...register('name')}/>
+                {getError('name')}
                 <br/>
-                <input type="radio"  {...register('radio')} value="HTML"/>
+                <input type="radio"  {...register('language')} value="javascript"/>
                 <br/>
-                <input type="radio" {...register('radio')} value="css"/>
+                <input type="radio" {...register('language')} value="c#"/>
                 <br/>
-                <input type="radio" {...register('radio')} value="22"/>
+                {getError('language')}
+
                 <br/>
                 <input type="checkbox" {...register('news')} value='subscribe'/>
                 <br/>
-                <select  {...register('select')}>
+                <select  {...register('car')}>
                     <option value="volvo">Volvo</option>
                     <option value="saab">Saab</option>
                     <option value="mercedes">Mercedes</option>

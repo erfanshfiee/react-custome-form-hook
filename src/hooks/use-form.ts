@@ -1,4 +1,4 @@
-import {array, object, ObjectSchema, string} from 'yup'
+import {ObjectSchema, object} from 'yup'
 import {useEffect, useRef, useState} from "react";
 
 function useForm<T extends { [key: string]: any }>(
@@ -22,7 +22,7 @@ function useForm<T extends { [key: string]: any }>(
                     field.ref.value = initialValues[item];
                 }
             }
-            if(Object.keys(initialValues).length){
+            if (Object.keys(initialValues).length) {
                 validate()
             }
         }, 0)
@@ -100,6 +100,7 @@ function useForm<T extends { [key: string]: any }>(
     }
 
     const settErros = (name: string, e: any) => {
+        if (!e.errors) return;
         const field = fields[name];
         if (field instanceof Array) {
             field.forEach(f => {
