@@ -1,7 +1,7 @@
 import { object } from "yup";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  Callbacks,
+  Callback,
   Field,
   FieldItem,
   Error,
@@ -16,7 +16,7 @@ function useForm<T extends { [key: string]: any }>(
 ) {
   const fields: Field = {};
   const [errors, setErrors] = useState<Error>();
-  const callBacksOnFieldChange = useRef<Callbacks<T>>({});
+  const callBacksOnFieldChange = useRef<Callback<T>>({});
   useEffect(() => {
     setTimeout(() => {
       for (let item in params.initialValues) {

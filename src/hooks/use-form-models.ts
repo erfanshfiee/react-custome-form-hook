@@ -1,6 +1,6 @@
 import { ObjectSchema } from "yup";
 
-export type Callbacks<T> = {
+export type Callback<T> = {
   [key in keyof T]?: (value: any) => void;
 };
 
