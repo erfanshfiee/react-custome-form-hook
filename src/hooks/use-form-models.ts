@@ -1,3 +1,5 @@
+import { ObjectSchema } from "yup";
+
 export type Callbacks<T> = {
   [key in keyof T]?: (value: any) => void;
 };
@@ -12,4 +14,8 @@ export interface FieldItem {
 
 export interface Error {
   [key: string]: string[];
+}
+export interface UseFormParameterModel<T> {
+  validationScheme?: ObjectSchema<any>;
+  initialValues?: T;
 }

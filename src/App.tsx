@@ -1,14 +1,15 @@
-import React, { useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import "./App.css";
 import useForm from "./hooks/use-form";
 import { object, string } from "yup";
 const formSchema = object().shape({
   email: string().email().required(),
-  language: string().required(),
 });
 function App() {
-  const { register, handleSubmit, errors, onChange } =
-    useForm<formValues>(formSchema);
+  const { register, handleSubmit, errors, onChange } = useForm<formValues>({
+    validationScheme: formSchema,
+    initialValues: { email: "15" },
+  });
   const onSubmit = (formValues: formValues) => {
     console.log(formValues);
     console.log(errors);
@@ -76,5 +77,6 @@ function App() {
 interface formValues {
   email: string;
   language?: string;
+  car?: string;
 }
 export default App;

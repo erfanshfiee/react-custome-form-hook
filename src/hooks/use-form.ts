@@ -1,34 +1,45 @@
-import { ObjectSchema, object } from "yup";
+import { object } from "yup";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Callbacks, Field, FieldItem, Error } from "./use-form-models";
-import { partial } from "lodash";
+import {
+  Callbacks,
+  Field,
+  FieldItem,
+  Error,
+  UseFormParameterModel,
+} from "./use-form-models";
 
 function useForm<T extends { [key: string]: any }>(
-  validationScheme: ObjectSchema<any> = object(),
-  initialValues: T = {} as T
+  params: UseFormParameterModel<T> = {
+    validationScheme: object(),
+    initialValues: {} as T,
+  }
 ) {
   const fields: Field = {};
   const [errors, setErrors] = useState<Error>();
   const callBacksOnFieldChange = useRef<Callbacks<T>>({});
   useEffect(() => {
     setTimeout(() => {
-      for (let item in initialValues) {
+      for (let item in params.initialValues) {
         const field = fields[item];
         if (Array.isArray(field)) {
           field.forEach((f) => {
-            if (f.ref.value === initialValues[item]) {
+            if (
+              params.initialValues &&
+              f.ref.value === params.initialValues[item]
+            ) {
               (f.ref as HTMLInputElement).checked = true;
             }
           });
         } else {
-          field.ref.value = initialValues[item];
+          if (field.ref instanceof HTMLInputElement) {
+            field.ref.defaultValue = params.initialValues[item];
+          } else {
+            field.ref.value = params.initialValues[item];
+          }
         }
       }
-      if (Object.keys(initialValues).length) {
-        validate();
-      }
     }, 0);
-  }, [initialValues, fields]);
+  }, [params.initialValues, fields]);
   const register = (name: string) => {
     return {
       onChange: (e: any) => {
@@ -115,8 +126,9 @@ function useForm<T extends { [key: string]: any }>(
   };
 
   const validateAt = async (name: string, value: any) => {
+    if (!params.validationScheme) return;
     try {
-      const validationResult = validationScheme.validateSyncAt(
+      const validationResult = params.validationScheme.validateSyncAt(
         name,
         getValues()
       );
@@ -127,10 +139,11 @@ function useForm<T extends { [key: string]: any }>(
   };
 
   const validate = () => {
+    if (!params.validationScheme) return;
     const values = getValues();
     for (let name in fields) {
       try {
-        validationScheme.validateSyncAt(name, values);
+        params.validationScheme.validateSyncAt(name, values);
         clearError(name);
       } catch (e: any) {
         settErros(name, e);
